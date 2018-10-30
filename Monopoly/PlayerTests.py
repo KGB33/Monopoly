@@ -1,4 +1,4 @@
-from Player import Player
+from UserEntity import Player
 from unittest.mock import patch, MagicMock
 import unittest
 
@@ -84,6 +84,49 @@ class TestRollDice(unittest.TestCase):
         test_player.position = 35
         test_player.roll_dice()
         self.assertEquals(test_player.position, 17)
+
+    @patch("Player.randint", side_effect=[2, 4])
+    @patch("Player.get_yes_or_no_input", return_value = False)
+    def test_roll_dice_while_in_jail_not_doubles(self, randint, get_yes_or_no_input):
+        test_player = Player("test")
+        test_player.position = 'jail'
+        test_player.roll_dice()
+        self.assertEqual(test_player.position, 'jail')
+
+    @patch("Player.randint", side_effect = [3, 3, 2, 4])
+    @patch("Player.get_yes_or_no_input", return_value = False)
+    def test_roll_dice_while_in_jail_with_doubles(self, randint, get_yes_or_no_input):
+        test_player = Player("test")
+        test_player.position = 'jail'
+        test_player.roll_dice()
+        self.assertEqual(test_player.position, 22)
+
+    @patch("Player.randint", side_effect=[2, 4])
+    @patch("Player.get_yes_or_no_input", return_value = True)
+    def test_roll_dice_while_in_jail_pay_bail_no_doubles(self, randint, get_yes_or_no_input):
+        test_player = Player("test")
+        test_player.position = 'jail'
+        test_player.roll_dice()
+        self.assertEqual(test_player.position, 16)
+        self.assertEqual(test_player.money, 1450)
+
+    @patch("Player.randint", side_effect = [3, 3, 2, 4])
+    @patch("Player.get_yes_or_no_input", return_value = True)
+    def test_roll_dice_while_in_jail_pay_bail_with_doubles(self, randint, get_yes_or_no_input):
+        test_player = Player("test")
+        test_player.position = 'jail'
+        test_player.roll_dice()
+        self.assertEqual(test_player.position, 22)
+        self.assertEqual(test_player.money, 1450)
+
+    @patch("Player.randint", side_effect = [5, 3, 2, 4])
+    @patch("Player.get_yes_or_no_input", return_value = False)
+    def test_roll_dice_while_in_jail_stay_in_jail(self, randint, get_yes_or_no_input):
+        test_player = Player("test")
+        test_player.position = 'jail'
+        test_player.roll_dice()
+        self.assertEqual(test_player.position, 'jail')
+        self.assertEqual(test_player.money, 1500)
 
 
 if __name__ == '__main__':

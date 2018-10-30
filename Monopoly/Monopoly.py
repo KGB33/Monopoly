@@ -1,4 +1,4 @@
-from Player import Player
+from UserEntity import Player
 from Board import Board
 """
 Temp main to demonstrat / play with player class
