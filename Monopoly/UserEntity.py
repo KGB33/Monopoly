@@ -8,7 +8,8 @@ class UserEntity(ABC):
     """
     Abstract base class for Player and Bank Classes
     """
-    pass
+    def __init__(self, money_in=0):
+        self.money = money_in
 
 
 class Player(UserEntity):
@@ -28,7 +29,7 @@ class Player(UserEntity):
         self.name = name_in
         self.position = 0
         self.owned_properites = {}
-        self.money = money_in
+        return super().__init__(money_in=money_in)
 
     def roll_dice(self, num_doubles=0):
         """
@@ -75,3 +76,11 @@ class Player(UserEntity):
         landed on, and then activeates the property's method
         """
         return Board.spaces[self.position]
+
+class Bank(UserEntity):
+    """
+    The Bank Class for the game
+    """
+    def __init__(self):
+        return super().__init__(money_in=0)
+

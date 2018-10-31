@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from UserEntity import Player, Bank
 from InputValidation import get_yes_or_no_input
 
 class Location(ABC):
@@ -35,7 +36,7 @@ class Property(Location):
         self.price = property_data_in[2]
         self.rent = property_data_in[3:]
         self.number_of_houses = 0
-        self.owner = 'bank'
+        self.owner = Bank
         self.is_morgaged = False
         
 
@@ -44,28 +45,41 @@ class Property(Location):
         Returns the proper function depending on
         who landed on the property and who owns the property
         """
-        if self.owner == "bank": 
-            return owned_by_bank(self, player)
+        if self.owner == Bank: 
+            self.owned_by_bank(player)
         elif self.owner != player:
-            return owned_by_player(self, player)
+            self.owned_by_player(player)
 
     def owned_by_bank(self, player):
-        buy_or_pass = ask_buy_or_pass()
+        buy_or_pass = self.ask_buy_or_pass()
         if buy_or_pass: #buy
-            player.money = player.money - self.cost
+            player.money = player.money - self.price
             self.owner = player
-            player.owned_properties += {self.location : self.name}
+            player.owned_properites.update({self.location : self.name})
+            self.is_morgaged = False
+            self.price = self.price * 2
 
-    def ask_buy_or_pass(self, is_morgaged):
+    def owned_by_player(self, player):
+        self.owner.money += self.rent[self.number_of_houses]
+        player.money -= self.rent[self.number_of_houses]
+
+    def ask_buy_or_pass(self):
         """
         asks the player if they would like to purchuse the
         property, and displays the Name and price
         """
-        if self.is_morgaged:
-            buy_or_pass = get_yes_or_no_input("Would you like to buy " + self.name +
-                                    "for $" + (self.price/2) +
-                                    "? (half off due to morgage)")
-        else:
-            buy_or_pass = get_yes_or_no_input("Would you like to buy " + self.name +
-                                    "for $" + self.price + "? y/n")
+        buy_or_pass = get_yes_or_no_input("Would you like to buy " + self.name +
+                                    "for $" + str(self.price) + "? y/n")
         return buy_or_pass
+
+    def morgage(self):
+        self.is_morgaged = True
+        self.price = self.price / 2
+        self.owner.money += self.price
+        self.owner = Bank
+
+    def unmorgage(self, player):
+        self.is_morgaged = False
+        self.price = self.price * 2
+        self.owner = player
+        self.owner.money -= self.price * .75

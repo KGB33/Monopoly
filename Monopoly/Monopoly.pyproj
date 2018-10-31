@@ -30,6 +30,9 @@
     <Compile Include="InputValidation.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BankTests.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tiles.py">
       <SubType>Code</SubType>
     </Compile>
@@ -41,7 +44,7 @@
     <Compile Include="InputValidationTests.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PropertyTest.py" />
+    <Compile Include="PropertyTests.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
