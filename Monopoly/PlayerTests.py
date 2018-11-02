@@ -76,6 +76,7 @@ class TestRollDice(unittest.TestCase):
         test_player = Player("test")
         test_player.position = 35
         test_player.roll_dice()
+        self.assertEqual(test_player.money, 1700)
         self.assertEquals(test_player.position, 5)
 
     @patch("UserEntity.randint", side_effect=[6, 6, 6, 4])
@@ -83,6 +84,7 @@ class TestRollDice(unittest.TestCase):
         test_player = Player("test")
         test_player.position = 35
         test_player.roll_dice()
+        self.assertEquals(test_player.money, 1700)
         self.assertEquals(test_player.position, 17)
 
     @patch("UserEntity.randint", side_effect=[2, 4])
@@ -127,6 +129,14 @@ class TestRollDice(unittest.TestCase):
         test_player.roll_dice()
         self.assertEqual(test_player.position, 'jail')
         self.assertEqual(test_player.money, 1500)
+
+    @patch("UserEntity.randint", side_effect = [2,3])
+    def test_roll_dice_pass_go(self, randint):
+        test_player = Player("test")
+        test_player.position = 37
+        test_player.roll_dice()
+        self.assertEqual(test_player.money, 1700)
+        self.assertEqual(test_player.position, 2)
 
 
 if __name__ == '__main__':

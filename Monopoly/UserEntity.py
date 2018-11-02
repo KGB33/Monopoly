@@ -11,6 +11,13 @@ class UserEntity(ABC):
     def __init__(self, money_in=0):
         self.money = money_in
 
+    def exchange_money(self, paying_player, amount):
+        """
+        Takes money from paying_player and gives to self
+        """
+        self.money += amount
+        paying_player.money -= amount
+
 
 class Player(UserEntity):
     """
@@ -67,6 +74,8 @@ class Player(UserEntity):
 
     def move_player(self, num_spaces):
         self.position += num_spaces
+        if self.position > 39: #pass go, get money
+            self.money += 200
         self.position = self.position % 40
 
     def landed_on(self):
@@ -81,6 +90,12 @@ class Bank(UserEntity):
     """
     The Bank Class for the game
     """
-    def __init__(self):
-        return super().__init__(money_in=0)
+    def __init__(self, money_in=0):
+        return super().__init__(money_in=money_in)
+
+    def exchange_money(self, paying_player, amount):
+        """
+        Takes money from paying player
+        """
+        paying_player.money -= amount
 

@@ -38,7 +38,7 @@ class TestLandedOn(unittest.TestCase):
         test_property.landed_on(test_player)
         self.assertEqual(test_property.owner, test_player)
         self.assertEqual(test_player.money, 1350)
-        self.assertEqual(test_player.owned_properites, {test_property.location : test_property.name})
+        self.assertEqual(test_player.owned_properites, {test_property.location : test_property})
 
     @patch("Tiles.get_yes_or_no_input", return_value=False)
     def test_landed_on_owned_by_bank_dont_buy(self, get_yes_or_no_input):
@@ -77,7 +77,7 @@ class TestLandedOn(unittest.TestCase):
         test_property.landed_on(test_player)
         self.assertEqual(test_property.owner, test_player)
         self.assertEqual(test_player.money, 1425)
-        self.assertEqual(test_player.owned_properites, {test_property.location : test_property.name})
+        self.assertEqual(test_player.owned_properites, {test_property.location : test_property})
 
 
 
