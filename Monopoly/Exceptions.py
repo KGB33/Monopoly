@@ -4,12 +4,9 @@ class PlayerInJailError(Exception):
     """
     pass
 
+
 class PlayerOutOfMoneyError(Exception):
     """
     Raised when the player is out of Money
     """
     pass
-
-
-
-

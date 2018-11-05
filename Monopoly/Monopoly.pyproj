@@ -33,6 +33,9 @@
     <Compile Include="BankTests.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RailroadTests.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tiles.py">
       <SubType>Code</SubType>
     </Compile>

@@ -1,6 +1,7 @@
 import unittest
 from UserEntity import Bank
 
+
 class TestInit(unittest.TestCase):
     """
     Tests for Bank __init__

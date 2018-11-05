@@ -1,4 +1,3 @@
-
 def get_yes_or_no_input(prompt):
     """
     prompts the user for a y/n answer
@@ -12,7 +11,3 @@ def get_yes_or_no_input(prompt):
             return False
         else:
             print("Input not accepted, please try again\n")
-
-
-
-

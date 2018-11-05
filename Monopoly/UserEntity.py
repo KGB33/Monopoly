@@ -4,6 +4,7 @@ from Exceptions import PlayerInJailError
 from InputValidation import get_yes_or_no_input
 from abc import ABC, abstractmethod
 
+
 class UserEntity(ABC):
     """
     Abstract base class for Player and Bank Classes
@@ -74,7 +75,7 @@ class Player(UserEntity):
 
     def move_player(self, num_spaces):
         self.position += num_spaces
-        if self.position > 39: #pass go, get money
+        if self.position > 39:  # pass go, get money
             self.money += 200
         self.position = self.position % 40
 
@@ -85,6 +86,7 @@ class Player(UserEntity):
         landed on, and then activeates the property's method
         """
         return Board.spaces[self.position]
+
 
 class Bank(UserEntity):
     """
@@ -98,4 +100,3 @@ class Bank(UserEntity):
         Takes money from paying player
         """
         paying_player.money -= amount
-
