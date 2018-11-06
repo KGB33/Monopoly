@@ -3,6 +3,15 @@ from UserEntity import Player, Bank
 from InputValidation import get_yes_or_no_input
 from random import randint
 
+class Board(object):
+    """
+    The Monopoly Board
+    Using temp spaces dictionary for testing
+    """
+    def __init__(self):
+        self.spaces = { x: Property(x, ["Name", 150, "Color", 5, 10, 20, 40, 80, 160])
+                  for x in range(0, 40)}
+
 
 class Location(ABC):
     """
@@ -18,9 +27,6 @@ class Location(ABC):
         self.is_morgaged = False
         super().__init__()
 
-    @abstractmethod
-    def landed_on(self, player):
-        pass
 
     def landed_on(self, player):
         """
@@ -129,3 +135,149 @@ class Railroad(Location):
             if isinstance(self.owner.owned_properites[key], Railroad):
                 num_railroads_owned += 1
         self.owner.exchange_money(player, cost[num_railroads_owned])
+
+
+class Effect(ABC):
+    """
+    Parent class for all squares where an effect is
+    appled. Including Chance, Community Chest, Income tax, etc.
+    """
+
+    @abstractmethod
+    def __init__(self, location, name):
+        self.location = location
+        self.name = name
+
+    @abstractmethod
+    def landed_on(self, player):
+        pass
+
+
+class Card(Effect):
+    """
+    Parent Class for Chance and Communty Chest Cards
+    """
+
+    def __init__(self, location, name):
+        self.active_player = Player
+        return super().__init__(location, name)
+
+    def landed_on(self, player):
+        self.active_player = player
+        return self.draw_card()
+
+    def draw_card(self):
+        cards = {0: "Cards not implemented."}
+        return cards[randint(0, len(cards) - 1)]
+
+    def advance_to_tile(self, tile_num):
+        """
+        Moves player to specified tile
+        """
+        # Checks if player will pass go
+        if self.active_player.position >= tile_num:
+            self.active_player.money += 200
+        self.active_player.position = tile_num
+        return Board[self.active_player.position].landed_on()
+
+    def advance_to_next(self, class_type):
+        i = 0
+        while True:
+            if isinstance(Board[self.active_player.position + i], class_type):
+                self.active_player.position += i
+                if self.active_player.position >= 40:
+                    self.active_player.money += 200
+                    self.active_player.position = self.active_player.position % 40
+                return Board[self.active_player.position].landed_on
+            else:
+                i += 1
+
+    def gain_money(self, amount):
+        self.active_player.money += amount
+
+    def lose_money(self, amount):
+        FreeParking.pay_money(amount)
+
+    def get_out_of_jail_free(self):
+        self.active_player.get_out_of_jail_cards += 1
+
+    def go_back(self, num_tiles):
+        self.active_player.position -= num_tiles
+        return Board[self.active_player.position].landed_on()
+
+    def go_to_jail(self):
+        self.active_player.position = 'jail'
+
+    def house_repairs(self):
+        owed_money = 0
+        for key in self.active_player.owned_properties:
+            hold = self.active_player.owned_properties[key].number_of_houses
+            owed_money += 25 * hold
+        FreeParking.pay_money(owed_money, self.active_player)
+
+    def pay_all_other_players(self, amount):
+        for person in game:
+            person.exchange_money(self.active_player, amount)
+
+    def get_money_from_all_other_players(self, amount):
+        self.pay_all_other_self.active_players(-1 * amount)
+          
+
+class Chance(Card):
+    """
+    All Chance Cards
+    """
+
+    def __init__(self, location, name):
+        return super().__init__(location, name)
+
+    def draw_card(self):
+        cards = {
+            0: self.advance_to_tile(0),
+            1: self.advance_to_tile(24),
+            2: self.advance_to_tile(11),
+            3: self.advance_to_next(Utility),
+            4: self.advance_to_next(Railroad),
+            5: self.advance_to_next(Railroad),
+            6: self.gain_money(50),
+            7: self.get_out_of_jail_free(),
+            8: self.go_back(3),
+            9: self.go_to_jail(),
+            10: self.house_repairs(),
+            11: self.lose_money(15),
+            12: self.advance_to_tile(5),
+            13: self.advance_to_tile(39),
+            14: self.pay_all_other_players(50),
+            15: self.gain_money(150),
+            16: self.gain_money(100)}
+        return cards[randint(0, len(cards) - 1)]
+
+    
+
+class CommunityChest(Card):
+    """
+    All Community Chest Cards
+    """
+    def __init__(self, location, name):
+        return super().__init__(location, name)
+
+    def draw_card(self):
+        cards = {
+            0: self.self.advance_to_tile(0),
+            1: self.gain_money(200),
+            2: self.lose_money(50),
+            3: self.gain_money(50),
+            4: self.get_out_of_jail(),
+            5: self.go_to_jail(),
+            6: self.get_money_from_all_other_players(50),
+            7: self.gain_money(100),
+            8: self.gain_money(20),
+            9: self.get_money_from_all_other_players(10),
+            10: self.gain_money(100),
+            11: self.lose_money(50),
+            12: self.lose_money(150),
+            13: self.gain_money(25),
+            14: self.house_repairs(),
+            15: self.gain_money(10),
+            16: self.gain_money(100)}
+        return cards[randint(0, len(cards) - 1)]

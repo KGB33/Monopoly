@@ -1,5 +1,5 @@
 from UserEntity import Player
-from Board import Board
+from Tiles import Board
 """
 Temp main to demonstrat / play with player class
 """

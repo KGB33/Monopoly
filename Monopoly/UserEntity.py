@@ -1,5 +1,5 @@
 from random import randint
-from Board import Board
+from Tiles import Board
 from Exceptions import PlayerInJailError
 from InputValidation import get_yes_or_no_input
 from abc import ABC, abstractmethod

@@ -21,7 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Board.py">
+    <Compile Include="CardsTests.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Exceptions.py">
