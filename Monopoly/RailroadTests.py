@@ -4,14 +4,10 @@ from UserEntity import Player
 from unittest.mock import patch
 
 
-def getData():
-    return ["Name", 200]
-
-
 class TestInit(unittest.TestCase):
 
     def test_init(self):
-        test_rr = Railroad(5, getData())
+        test_rr = Railroad(5, "Name")
         self.assertEqual(test_rr.name, "Name")
         self.assertEqual(test_rr.price, 200)
         self.assertEqual(test_rr.location, 5)
@@ -21,7 +17,7 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_one_owned(self, get_yes_or_no_input):
-        test_rr_1 = Railroad(5, getData())
+        test_rr_1 = Railroad(5, "Name")
         owner = Player("Owner")
         rider = Player("Rider")
         test_rr_1.landed_on(owner)
@@ -33,8 +29,8 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_two_owned(self, get_yes_or_no_input):
-        test_rr_1 = Railroad(5, getData())
-        test_rr_2 = Railroad(15, getData())
+        test_rr_1 = Railroad(5, "Name 1")
+        test_rr_2 = Railroad(15, "Name 2")
         owner = Player("Owner")
         rider = Player("Rider")
         test_rr_1.landed_on(owner)
@@ -47,9 +43,9 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_three_owned(self, get_yes_or_no_input):
-        test_rr_1 = Railroad(5, getData())
-        test_rr_2 = Railroad(15, getData())
-        test_rr_3 = Railroad(25, getData())
+        test_rr_1 = Railroad(5, "Name 1")
+        test_rr_2 = Railroad(15, "Name 2")
+        test_rr_3 = Railroad(25, "Name 3")
         owner = Player("Owner")
         rider = Player("Rider")
         test_rr_1.landed_on(owner)
@@ -64,10 +60,10 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_four_owned(self, get_yes_or_no_input):
-        test_rr_1 = Railroad(5, getData())
-        test_rr_2 = Railroad(15, getData())
-        test_rr_3 = Railroad(25, getData())
-        test_rr_4 = Railroad(35, getData())
+        test_rr_1 = Railroad(5, "Name 1")
+        test_rr_2 = Railroad(15, "Name 2")
+        test_rr_3 = Railroad(25, "Name 3")
+        test_rr_4 = Railroad(35, "Name 4")
         owner = Player("Owner")
         rider = Player("Rider")
         test_rr_1.landed_on(owner)

@@ -1,5 +1,4 @@
 from random import randint
-from Tiles import Board
 from Exceptions import PlayerInJailError
 from InputValidation import get_yes_or_no_input
 from abc import ABC, abstractmethod
@@ -85,7 +84,7 @@ class Player(UserEntity):
         Checks with the board object to determan what was
         landed on, and then activeates the property's method
         """
-        return Board.spaces[self.position]
+        return self.position
 
 
 class Bank(UserEntity):
@@ -100,3 +99,7 @@ class Bank(UserEntity):
         Takes money from paying player
         """
         paying_player.money -= amount
+
+class FreeParking(UserEntity):
+    def __init__(self, money_in = 0):
+        return super().__init__(money_in)

@@ -29,17 +29,17 @@ class TestLandedOn(unittest.TestCase):
     def test_landed_on_property(self):
         test_player = Player("test")
         test_player.position = 3
-        self.assertEqual(test_player.landed_on(), "Brown 2")
+        self.assertEqual(test_player.landed_on(), 3)
 
     def test_landed_on_jail(self):
         test_player = Player("test")
         test_player.position = 'jail'
-        self.assertEqual(test_player.landed_on(), "You're in Jail")
+        self.assertEqual(test_player.landed_on(), "jail")
 
     def test_landed_on_action_spot(self):
         test_player = Player("test")
         test_player.position = 2
-        self.assertEqual(test_player.landed_on(), "Community Chest")
+        self.assertEqual(test_player.landed_on(), 2)
 
 
 class TestRollDice(unittest.TestCase):

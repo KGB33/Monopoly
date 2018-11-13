@@ -4,14 +4,10 @@ from UserEntity import Bank, Player
 from unittest.mock import patch
 
 
-def correct_data():
-    return ["Name", 150]
-
-
 class Testinit(unittest.TestCase):
 
     def test_init(self):
-        test_util = Utility(28, correct_data())
+        test_util = Utility(28, "Name")
         self.assertEqual(test_util.location, 28)
         self.assertFalse(test_util.is_morgaged)
         self.assertEqual(test_util.name, "Name")
@@ -23,7 +19,7 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_owned_by_bank_and_by(self, get_yes_or_no_input):
-        test_util = Utility(28, correct_data())
+        test_util = Utility(28, "Name")
         test_player = Player("Name")
         test_util.landed_on(test_player)
         self.assertEqual(test_util.owner, test_player)
@@ -33,7 +29,7 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=False)
     def test_landed_on_owned_by_bank_dont_buy(self, get_yes_or_no_input):
-        test_util = Utility(12, correct_data())
+        test_util = Utility(12, "Name")
         test_player = Player("Test Player")
         test_util.landed_on(test_player)
         self.assertEqual(test_util.owner, Bank)
@@ -44,7 +40,7 @@ class TestLandedOn(unittest.TestCase):
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_owned_by_diff_player_who_owns_one_util(
             self, randint, get_yes_or_no_input):
-        test_util = Utility(12, correct_data())
+        test_util = Utility(12, "Name")
         test_player_1 = Player("Test Player")
         test_player_2 = Player("Owning Player")
         test_util.landed_on(test_player_2)
@@ -58,8 +54,8 @@ class TestLandedOn(unittest.TestCase):
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_owned_by_diff_player_who_owns_two_utils(
             self, randint, get_yes_or_no_input):
-        test_util_1 = Utility(12, correct_data())
-        test_util_2 = Utility(28, correct_data())
+        test_util_1 = Utility(12, "Name")
+        test_util_2 = Utility(28, "Name")
         test_player_1 = Player("Test Player")
         test_player_2 = Player("Owning Player")
         test_util_1.landed_on(test_player_2)
@@ -73,7 +69,7 @@ class TestLandedOn(unittest.TestCase):
         self.assertEqual(test_player_2.money, 1250)
 
     def test_landed_on_owned_by_same_player(self):
-        test_util = Utility(12, correct_data())
+        test_util = Utility(12, "Name")
         test_player = Player("Test Player")
         test_util.owner = test_player
         test_util.landed_on(test_player)
@@ -83,7 +79,7 @@ class TestLandedOn(unittest.TestCase):
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_owned_by_bank_buy_while_morgaged(
             self, get_yes_or_no_input):
-        test_util = Utility(12, correct_data())
+        test_util = Utility(12, "Name")
         test_player = Player("Test Player")
         test_player_2 = Player("Morgageee")
         test_util.owner = test_player_2
