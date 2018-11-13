@@ -36,6 +36,7 @@ class Player(UserEntity):
         self.name = name_in
         self.position = 0
         self.owned_properites = {}
+        self.get_out_of_jail_cards = 0
         return super().__init__(money_in=money_in)
 
     def roll_dice(self, num_doubles=0):
@@ -62,7 +63,17 @@ class Player(UserEntity):
                 if dice_1 == dice_2:
                     return self.roll_dice(num_doubles=num_doubles)
         except PlayerInJailError:
-            pay_bail = get_yes_or_no_input("Would you like to pay bail? ($50)")
+            use_card = False
+            pay_bail = False
+            if self.get_out_of_jail_cards > 0:
+                use_card = get_yes_or_no_input(
+                    "Would you like you use a get out of free card? you have"
+                    + str(get_out_of_jail_cards))
+            else:
+                pay_bail = get_yes_or_no_input("Would you like to pay bail? ($50)")
+            if use_card:
+                self.position = 10
+                self.move_player(dice_1 + dice_2)
             if pay_bail:
                 self.money -= 50
                 self.position = 10

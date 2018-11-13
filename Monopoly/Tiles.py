@@ -189,7 +189,7 @@ class Card(Effect):
         self.active_player.money += amount
 
     def lose_money(self, amount):
-        FreeParking.exchange_money(self.active_player, amount)
+        Board.spaces[20].exchange_money(self.active_player, amount)
 
     def get_out_of_jail_free(self):
         self.active_player.get_out_of_jail_cards += 1
@@ -206,7 +206,7 @@ class Card(Effect):
         for key in self.active_player.owned_properties:
             hold = self.active_player.owned_properties[key].number_of_houses
             owed_money += 25 * hold
-        FreeParking.exchange_money(self.active_player, owed_money)
+        Board.spaces[20].exchange_money(self.active_player, owed_money)
 
     def pay_all_other_players(self, amount):
         for person in game:
@@ -319,15 +319,17 @@ class Board(object):
     """
     spaces = {}
     streets = { x: Property(x, ["Name", 150, "Color", 5, 10, 20, 40, 80, 160])
-              for x in range(0, 40)}
+                for x in range(0, 40)}
     railroads = {x: Railroad(x, "Name") for x in [5, 15, 25, 35]}
     utilitys = {x: Utility(x, "Name") for x in [12, 28]}
     chances = {x: Chance(x, "Chance Card") for x in [7, 22, 36]}
     community_chest = {x: CommunityChest(x, "Community Chest Card")
-                       for x in [2, 17, 33]}
-
+                        for x in [2, 17, 33]}
+    free_parking = {20: FreeParking()}
     spaces.update(streets)
     spaces.update(railroads)
     spaces.update(utilitys)
     spaces.update(chances)
     spaces.update(community_chest)
+    spaces.update(free_parking)
+    
