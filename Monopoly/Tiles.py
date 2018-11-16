@@ -4,8 +4,6 @@ from InputValidation import get_yes_or_no_input
 from random import randint
 
 
-
-
 class Location(ABC):
     """
     Abstract Parent Class for all locations on the board
@@ -19,7 +17,6 @@ class Location(ABC):
         self.owner = Bank
         self.is_morgaged = False
         super().__init__()
-
 
     def landed_on(self, player):
         """
