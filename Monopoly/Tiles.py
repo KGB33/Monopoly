@@ -47,7 +47,7 @@ class Location(ABC):
         """
         buy_or_pass = get_yes_or_no_input(
                             "Would you like to buy " + self.name +
-                            "for $" + str(self.price) + "? y/n")
+                            " for $" + str(self.price) + "? y/n")
         return buy_or_pass
 
     def morgage(self):
@@ -78,7 +78,7 @@ class Property(Location):
         self.color = property_data[2]
         self.rent = property_data[3:]
         self.number_of_houses = 0
-        return super().__init__(location, property_data[0], property_data[1])
+        super().__init__(location, property_data[0], property_data[1])
 
 
 class Utility(Location):
@@ -92,7 +92,7 @@ class Utility(Location):
         location: position on the board, int from 0 to 39
         price defalut = 150
         """
-        return super().__init__(location, name, price)
+        super().__init__(location, name, price)
 
     def owned_by_player(self, player):
         num_utils_owned = 0
@@ -115,7 +115,7 @@ class Railroad(Location):
         railroad_data: list with vairous data formated as follows
         ["Name", Price]
         """
-        return super().__init__(location, name, price)
+        super().__init__(location, name, price)
 
     def owned_by_player(self, player):
         num_railroads_owned = 0
@@ -166,6 +166,8 @@ class Card(Effect):
         if self.active_player.position >= tile_num:
             self.active_player.money += 200
         self.active_player.position = tile_num
+        print("You've been moved to :", Board.spaces[tile_num],
+              "\n\tTile Number:", tile_num)
         return Board.spaces[self.active_player.position].landed_on(self.active_player)
 
     def advance_to_next(self, class_type):
@@ -180,37 +182,56 @@ class Card(Effect):
         self.active_player.position = location_to_check
         if passed_go:
             self.active_player.money += 200
+        print("You've advanced to the next ", str(class_type),
+              "\n\tTile Number: ", self.active_player.position)
         return Board.spaces[self.active_player.position].landed_on(self.active_player)
 
     def gain_money(self, amount):
+        print("You've gained $", amount)
         self.active_player.money += amount
 
     def lose_money(self, amount):
+        print("You've lost $", amount)
         Board.spaces[20].exchange_money(self.active_player, amount)
 
     def get_out_of_jail_free(self):
+        print("You got a get out of jail free card",
+              "\n\t you now have ", self.active_player.get_out_of_jail_cards)
         self.active_player.get_out_of_jail_cards += 1
 
     def go_back(self, num_tiles):
         self.active_player.position -= num_tiles
+        print("You've been sent back ", num_tiles, "tiles.",
+              "\nYou're now on tile number: ", self.active_player.position)
         return Board[self.active_player.position].landed_on()
 
     def go_to_jail(self):
+        print("Oh No! you've been sent to jail!!")
         self.active_player.position = 'jail'
 
     def house_repairs(self):
         owed_money = 0
-        for key in self.active_player.owned_properties:
-            hold = self.active_player.owned_properties[key].number_of_houses
-            owed_money += 25 * hold
+        for key in Board.spaces:
+            if Board.spaces[key].owner == self.active_player:
+                hold = Board.spaces[key].number_of_houses
+                owed_money += 25 * hold
+        print("House repairs are expensive!")
+        if owed_money == 0:
+            print("Lucky for you, you have no houses")
+        else:
+            print("You paid: $", owed_money)
         Board.spaces[20].exchange_money(self.active_player, owed_money)
 
     def pay_all_other_players(self, amount):
-        for person in game:
-            person.exchange_money(self.active_player, amount)
+        try:
+            for person in game:
+                person.exchange_money(self.active_player, amount)
+        except NameError:
+            print("Lucky for you I don't know how to make you pay everyone else... yet")
 
     def get_money_from_all_other_players(self, amount):
-        self.pay_all_other_self.active_players(-1 * amount)
+        amount = amount * -1
+        self.pay_all_other_players(amount)
           
 
 class Chance(Card):
@@ -219,7 +240,7 @@ class Chance(Card):
     """
 
     def __init__(self, location, name):
-        return super().__init__(location, name)
+        super().__init__(location, name)
 
     def draw_card(self):
         key = randint(0,16)
@@ -318,14 +339,14 @@ class Board(object):
     streets = { x: Property(x, ["Name", 150, "Color", 5, 10, 20, 40, 80, 160])
                 for x in range(0, 40)}
     railroads = {x: Railroad(x, "Name") for x in [5, 15, 25, 35]}
-    utilitys = {x: Utility(x, "Name") for x in [12, 28]}
+    utilities = {x: Utility(x, "Name") for x in [12, 28]}
     chances = {x: Chance(x, "Chance Card") for x in [7, 22, 36]}
     community_chest = {x: CommunityChest(x, "Community Chest Card")
                         for x in [2, 17, 33]}
     free_parking = {20: FreeParking()}
     spaces.update(streets)
     spaces.update(railroads)
-    spaces.update(utilitys)
+    spaces.update(utilities)
     spaces.update(chances)
     spaces.update(community_chest)
     spaces.update(free_parking)
