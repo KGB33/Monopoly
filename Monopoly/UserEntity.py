@@ -21,9 +21,9 @@ class UserEntity(ABC):
 
 class Player(UserEntity):
     """
-    Holds player data: Money, propteries owned, ect.
+    Holds player data: Money, properties owned, ect.
 
-    methods are responceable for player actions
+    methods are replaceable for player actions
         i.e. rolling dice, buying houses, paying rent, ect.
     """
 
@@ -37,7 +37,7 @@ class Player(UserEntity):
         self.position = 0
         self.owned_properites = {}
         self.get_out_of_jail_cards = 0
-        return super().__init__(money_in=money_in)
+        super().__init__(money_in=money_in)
 
     def roll_dice(self, num_doubles=0):
         """
@@ -47,41 +47,46 @@ class Player(UserEntity):
         """
         dice_1 = randint(1, 6)
         dice_2 = randint(1, 6)
+        print("You Rolled: (", dice_1, ",", dice_2, ")!",
+              "\nFor a total of:", dice_1 + dice_2)
         try:
             if dice_1 == dice_2:
-                # doubles rolled
+                print("Doubles! Awesome!!")
                 num_doubles = num_doubles + 1
+            else:
+                num_doubles = 0
             if num_doubles == 3:
                 # go to jail
                 self.position = 'jail'
-                # call landed on
+                print("You rolled too many doubles and landed in jail")
+                return num_doubles
             else:
                 if self.position == 'jail':
                     raise PlayerInJailError
                 self.move_player(dice_1 + dice_2)
-                # Call landed on
-                if dice_1 == dice_2:
-                    return self.roll_dice(num_doubles=num_doubles)
+                return num_doubles
         except PlayerInJailError:
             use_card = False
             pay_bail = False
             if self.get_out_of_jail_cards > 0:
                 use_card = get_yes_or_no_input(
                     "Would you like you use a get out of free card? you have"
-                    + str(get_out_of_jail_cards))
+                    + str(self.get_out_of_jail_cards))
             else:
                 pay_bail = get_yes_or_no_input("Would you like to pay bail? ($50)")
             if use_card:
                 self.position = 10
                 self.move_player(dice_1 + dice_2)
+                return num_doubles
             if pay_bail:
                 self.money -= 50
                 self.position = 10
                 self.move_player(dice_1 + dice_2)
+                return num_doubles
             if num_doubles == 1:
                 self.position = 10
                 self.move_player(dice_1 + dice_2)
-                return self.roll_dice(num_doubles=num_doubles)
+                return num_doubles
 
     def move_player(self, num_spaces):
         self.position += num_spaces
@@ -89,21 +94,13 @@ class Player(UserEntity):
             self.money += 200
         self.position = self.position % 40
 
-    def landed_on(self):
-        """
-        WIP
-        Checks with the board object to determan what was
-        landed on, and then activeates the property's method
-        """
-        return self.position
-
 
 class Bank(UserEntity):
     """
     The Bank Class for the game
     """
     def __init__(self, money_in=0):
-        return super().__init__(money_in=money_in)
+        super().__init__(money_in=money_in)
 
     def exchange_money(self, paying_player, amount):
         """
@@ -111,6 +108,16 @@ class Bank(UserEntity):
         """
         paying_player.money -= amount
 
+
 class FreeParking(UserEntity):
-    def __init__(self, money_in = 0):
-        return super().__init__(money_in)
+    """
+    Free parking space
+    """
+
+    def __init__(self, money_in=0):
+        self.name = "Free Parking"
+        super().__init__(money_in)
+
+    def landed_on(self, player):
+        player.money += self.money
+        self.money = 0
