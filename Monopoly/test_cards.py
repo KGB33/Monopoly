@@ -74,7 +74,7 @@ class TestAdvanceToNextUtility(unittest.TestCase):
         test_card.active_player = test_player
         test_card.advance_to_next(Utility)
         self.assertEqual(test_player.position, 12)
-        self.assertEqual(test_player.money, 1480)
+        self.assertEqual(test_player.money, 1350)
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     @patch("Tiles.randint", return_value=5)
@@ -86,7 +86,7 @@ class TestAdvanceToNextUtility(unittest.TestCase):
         test_card.active_player = test_player
         test_card.advance_to_next(Utility)
         self.assertEqual(test_player.position, 28)
-        self.assertEqual(test_player.money, 1480)
+        self.assertEqual(test_player.money, 1350)
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     @patch("Tiles.randint", return_value=5)
@@ -185,7 +185,6 @@ class TestAdvanceToTile(unittest.TestCase):
         test_player.position = 2
         test_card.active_player = test_player
         test_card.advance_to_tile(12)
-        self.assertEqual(test_player.money, 1350)
         self.assertEqual(test_player.position, 12)
 
 
@@ -196,7 +195,6 @@ class TestAdvanceToTile(unittest.TestCase):
         test_player.position = 31
         test_card.active_player = test_player
         test_card.advance_to_tile(28)
-        self.assertEqual(test_player.money, 1550)
         self.assertEqual(test_player.position, 28)
 
 
