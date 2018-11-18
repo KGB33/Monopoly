@@ -5,7 +5,7 @@ from UserEntity import Player, Bank
 
 
 def correct_data(self):
-    return ["Name", 150, "Color", 5, 10, 20, 40, 80, 160]
+    return [150, "Color", 5, 10, 20, 40, 80, 160]
 
 
 class Testinit(unittest.TestCase):
@@ -14,7 +14,7 @@ class Testinit(unittest.TestCase):
     """
 
     def test_init_with_correct_data(self):
-        test_property = Property(12, correct_data(self))
+        test_property = Property(12, "Name", correct_data(self))
         self.assertEqual(test_property.name, "Name")
         self.assertEqual(test_property.color, "Color")
         self.assertEqual(test_property.price, 150)
@@ -32,7 +32,7 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_owned_by_bank_and_buy(self, get_yes_or_no_input):
-        test_property = Property(12, correct_data(self))
+        test_property = Property(12, "Name", correct_data(self))
         test_player = Player("Test Player")
         test_property.landed_on(test_player)
         self.assertEqual(test_property.owner, test_player)
@@ -42,7 +42,7 @@ class TestLandedOn(unittest.TestCase):
 
     @patch("Tiles.get_yes_or_no_input", return_value=False)
     def test_landed_on_owned_by_bank_dont_buy(self, get_yes_or_no_input):
-        test_property = Property(12, correct_data(self))
+        test_property = Property(12, "Name", correct_data(self))
         test_player = Player("Test Player")
         test_property.landed_on(test_player)
         self.assertEqual(test_property.owner, Bank)
@@ -50,7 +50,7 @@ class TestLandedOn(unittest.TestCase):
         self.assertEqual(test_player.owned_properites, {})
 
     def test_landed_on_owned_by_diff_player(self):
-        test_property = Property(12, correct_data(self))
+        test_property = Property(12, "Name", correct_data(self))
         test_player_1 = Player("Test Player")
         test_player_2 = Player("Owning Player")
         test_property.owner = test_player_2
@@ -59,7 +59,7 @@ class TestLandedOn(unittest.TestCase):
         self.assertEqual(test_player_1.money, 1495)
 
     def test_landed_on_owned_by_same_player(self):
-        test_property = Property(12, correct_data(self))
+        test_property = Property(12, "Name", correct_data(self))
         test_player = Player("Test Player")
         test_property.owner = test_player
         test_property.landed_on(test_player)
@@ -69,7 +69,7 @@ class TestLandedOn(unittest.TestCase):
     @patch("Tiles.get_yes_or_no_input", return_value=True)
     def test_landed_on_owned_by_bank_buy_while_morgaged(
             self, get_yes_or_no_input):
-        test_property = Property(12, correct_data(self))
+        test_property = Property(12, "Name", correct_data(self))
         test_player = Player("Test Player")
         test_player_2 = Player("Morgageee")
         test_property.owner = test_player_2

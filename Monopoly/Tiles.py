@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from UserEntity import Player, Bank, FreeParking
 from InputValidation import get_yes_or_no_input
 from random import randint
+from Exceptions import TilesClassNotFoundError
 
 
 class Location(ABC):
@@ -69,16 +70,16 @@ class Property(Location):
     Does not include railroads or utilities
     """
 
-    def __init__(self, location, property_data):
+    def __init__(self, location, name, property_data):
         """
         location: position on the board, int from 0 to 39
         property_data: list with vairous data formated as follows
-        ["Name", Price, "Color", rent, rent_1_house, ..., rent_hotel]
+        [Price, "Color", rent, rent_1_house, ..., rent_hotel]
         """
-        self.color = property_data[2]
-        self.rent = property_data[3:]
+        self.color = property_data[1]
+        self.rent = property_data[2:]
         self.number_of_houses = 0
-        super().__init__(location, property_data[0], property_data[1])
+        super().__init__(location, name, property_data[0])
 
 
 class Utility(Location):
@@ -149,7 +150,7 @@ class Card(Effect):
 
     def __init__(self, location, name):
         self.active_player = Player
-        return super().__init__(location, name)
+        super().__init__(location, name)
 
     def landed_on(self, player):
         self.active_player = player
@@ -224,6 +225,7 @@ class Card(Effect):
 
     def pay_all_other_players(self, amount):
         try:
+            # TODO: implement pay all other players
             for person in game:
                 person.exchange_money(self.active_player, amount)
         except NameError:
@@ -288,7 +290,7 @@ class CommunityChest(Card):
     """
 
     def __init__(self, location, name):
-        return super().__init__(location, name)
+        super().__init__(location, name)
 
     def draw_card(self):
         key = randint(0,16)
@@ -301,7 +303,7 @@ class CommunityChest(Card):
         elif key == 3:
             return self.gain_money(50)
         elif key == 4:
-            return self.get_out_of_jail()
+            return self.get_out_of_jail_free()
         elif key == 5:
             return self.go_to_jail()
         elif key == 6:
@@ -336,13 +338,13 @@ class Board(object):
     Using temp spaces dictionary for testing
     """
     spaces = {}
-    streets = { x: Property(x, ["Name", 150, "Color", 5, 10, 20, 40, 80, 160])
-                for x in range(0, 40)}
+    streets = {x: Property(x, "Name", [150, "Color", 5, 10, 20, 40, 80, 160])
+               for x in range(0, 40)}
     railroads = {x: Railroad(x, "Name") for x in [5, 15, 25, 35]}
     utilities = {x: Utility(x, "Name") for x in [12, 28]}
     chances = {x: Chance(x, "Chance Card") for x in [7, 22, 36]}
     community_chest = {x: CommunityChest(x, "Community Chest Card")
-                        for x in [2, 17, 33]}
+                       for x in [2, 17, 33]}
     free_parking = {20: FreeParking()}
     spaces.update(streets)
     spaces.update(railroads)
@@ -350,4 +352,75 @@ class Board(object):
     spaces.update(chances)
     spaces.update(community_chest)
     spaces.update(free_parking)
-    
+
+    @classmethod
+    def read_in_board(cls):
+        """
+        read in a board from file. Each line should be formated as follows:
+        TileClass Square# class data
+        """
+        try:
+            spaces = {}
+            file_name = input("Please enter the file Name: ")
+            with open(file_name) as file:
+                for line in file:
+                    if not line.startswith('#'):
+                        data = line.split()
+                        new_tile = TileFactory.create_tile(data)
+                        spaces.update(new_tile)
+        except FileNotFoundError:
+            print("File Not found, please try again.\n")
+
+
+class TileFactory:
+    """
+    Creates all possible differnt tiles
+    """
+
+    @staticmethod
+    def create_tile(data):
+        try:
+            class_type = data[0]
+            position = int(data[1])
+            name = data[2]
+            data = data[3:]
+            if class_type == "Property":
+                return {position: Property(position, name, data)}
+            elif class_type == "Utility":
+                return {position: Utility(position, name)}
+            elif class_type == "Railroad":
+                return {position: Railroad(position, name)}
+            elif class_type == "Chance":
+                return {position: Chance(position, name)}
+            elif class_type == "CommunityChest":
+                return {position: CommunityChest(position, name)}
+            elif class_type == "SetTax":
+                return {position: SetTax(position, name, data)}
+            elif class_type == "PercentTax":
+                return {position: PercentTax(position, name, data)}
+            else:
+                raise TilesClassNotFoundError
+        except TilesClassNotFoundError:
+            print("\n\nError!!\n\tClass Type: ", class_type, " Not Found!")
+
+
+class SetTax(Effect):
+
+    def __init__(self, location, name, amount):
+        self.amount = amount
+        super().__init__(location, name)
+
+    def landed_on(self, player):
+        # TODO: SetTax Landed On
+        pass
+
+
+class PercentTax(Effect):
+
+    def __init__(self, location, name, percent):
+        self.percent = percent
+        super().__init__(location, name)
+
+    def landed_on(self, player):
+        # TODO: PercentTax landedOn
+        pass
