@@ -175,7 +175,7 @@ class Card(Effect):
         location_to_check = self.active_player.position + 1
         passed_go = False
         while not isinstance(
-            Board.spaces[location_to_check], class_type):
+                Board.spaces[location_to_check], class_type):
             location_to_check += 1
             if location_to_check > 39:
                 location_to_check = location_to_check % 40
@@ -380,8 +380,8 @@ class TileFactory:
     @staticmethod
     def create_tile(data):
         try:
-            class_type = data[0]
-            position = int(data[1])
+            class_type = data[1]
+            position = int(data[0])
             name = data[2]
             data = data[3:]
             if class_type == "Property":
@@ -398,6 +398,8 @@ class TileFactory:
                 return {position: SetTax(position, name, data)}
             elif class_type == "PercentTax":
                 return {position: PercentTax(position, name, data)}
+            elif class_type == "FreeParking":
+                return {position: FreeParking(position)}
             else:
                 raise TilesClassNotFoundError
         except TilesClassNotFoundError:

@@ -1,11 +1,47 @@
 # Lines Starting with '#' will not be read in
 
 # Basic Format:
-# ClassType Position Name RemaningData
+# Position ClassType Name RemaningData
 # RemaningData for Properties:
 # Color Price RentTeirs
 
-# Go
-Property 1 Mediterranean_Ave Brown 60 2 10 30 90 160 250
-Property
-# TODO: add the rest of the bord
+# 0 Go # TODO: Add Go
+1 Property Mediterranean_Ave Brown 60 2 10 30 90 160 250
+2 CommunityChest Community_Chest
+3 Property Baltic_Ave Brown 60 4 20 60 180 320 450
+4 SetTax Income_Tax 200
+5 Railroad Reading_Railroad
+6 Property Oriental_Ave Lite_Blue 100 6 30 90 270 400 550
+7 Chance Chance
+8 Property Vermont_Ave Lite_Blue 100 6 30 90 270 400 550
+9 Property Connecticut_Ave Lite_Blue 120 8 40 100 300 450 600
+# 10 Jail # TODO: Add jail
+11 Property St._Charles_Place Pink 140 10 50 150 450 625 750
+12 Utility Electric_Company
+13 Property States_Ave Pink 140 10 50 150 450 625 750
+14 Property Virginia_Ave Pink 160 12 60 180 500 700 900
+15 Railroad Pennsylvania_Railroad
+16 Property St._James_Place Orange 180 14 70 200 550 750 950
+17 CommunityChest Community_Chest
+18 Property Tennessee_Ave Orange 180 14 70 200 550 750 950
+19 Property New_York_Ave Orange 200 16 80 220 600 800 1000
+20 FreeParking FreeParking
+21 Property Kentucky_Ave Red 220 18 90 250 700 875 1050
+22 Chance Chance
+23 Property Indiana_Ave Red 220 18 90 250 700 875 1050
+24 Property Illinois_Ave Red 240 20 100 300 750 925 1100
+25 Railroad B&O_Railroad
+26 Property Atlantic_Ave Yellow 260 22 110 330 800 975 1150
+27 Property Ventnor_Ave Yellow 260 22 110 330 800 975 1150
+28 Utility Water_Works
+29 Property Marvin_Gardens Yellow 280 24 120 360 850 1025 1200
+# 30 Go_To_Jail # TODO: Add go to jail
+31 Property Pacific_Ave Green 300 26 130 390 900 1100 1275
+32 Property Colorado_Ave Green 300 26 130 390 900 1100 1275
+33 CommunityChest CommunityChest
+34 Property Pennsylvania_Ave Green 320 28 150 450 1000 1200 1400
+35 Railroad Short_Line
+36 Chance Chance
+37 Property Park_Place Dark_Blue 350 35 175 500 1100 1300 1500
+38 SetTax Luxury_Tax 100
+39 Property Boardwalk Dark_Blue 400 50 200 600 1400 1700 2000
