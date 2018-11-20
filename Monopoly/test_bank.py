@@ -12,5 +12,6 @@ class TestInit(unittest.TestCase):
         self.assertIsInstance(test_bank, Bank)
         self.assertEqual(test_bank.money, 0)
 
+
 if __name__ == '__main__':
     unittest.main()

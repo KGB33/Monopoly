@@ -1,11 +1,11 @@
 # Lines Starting with '#' will not be read in
-
+#
 # Basic Format:
 # Position ClassType Name RemaningData
 # RemaningData for Properties:
 # Color Price RentTeirs
-
-# 0 Go # TODO: Add Go
+#
+0 Go
 1 Property Mediterranean_Ave Brown 60 2 10 30 90 160 250
 2 CommunityChest Community_Chest
 3 Property Baltic_Ave Brown 60 4 20 60 180 320 450
@@ -15,7 +15,7 @@
 7 Chance Chance
 8 Property Vermont_Ave Lite_Blue 100 6 30 90 270 400 550
 9 Property Connecticut_Ave Lite_Blue 120 8 40 100 300 450 600
-# 10 Jail # TODO: Add jail
+10 JustVisiting
 11 Property St._Charles_Place Pink 140 10 50 150 450 625 750
 12 Utility Electric_Company
 13 Property States_Ave Pink 140 10 50 150 450 625 750
@@ -35,7 +35,7 @@
 27 Property Ventnor_Ave Yellow 260 22 110 330 800 975 1150
 28 Utility Water_Works
 29 Property Marvin_Gardens Yellow 280 24 120 360 850 1025 1200
-# 30 Go_To_Jail # TODO: Add go to jail
+30 GoToJail
 31 Property Pacific_Ave Green 300 26 130 390 900 1100 1275
 32 Property Colorado_Ave Green 300 26 130 390 900 1100 1275
 33 CommunityChest CommunityChest

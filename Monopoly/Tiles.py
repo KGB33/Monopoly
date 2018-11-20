@@ -63,6 +63,23 @@ class Location(ABC):
         self.owner = player
         self.owner.exchange_money(self.owner, self.price * -.75)
 
+    def format_owner(self):
+        if isinstance(self.owner, Bank):
+            owned_by = "Owner: {0}, Current Rent {1}" \
+                .format(self.owner, self.format_current_rent())
+        else:
+            owned_by = "Owner: {0}, Price: {1}, Morgaged: {2}" \
+                .format(self.owner, self.price, self.is_morgaged)
+        return owned_by
+
+    def format_current_rent(self):
+        return "TBD"
+
+    def __str__(self):
+        output = "{0} {1}" \
+                 "\n\t{2}".format(self.location, self.name, self.format_owner())
+        return output
+
 
 class Property(Location):
     """
@@ -74,12 +91,40 @@ class Property(Location):
         """
         location: position on the board, int from 0 to 39
         property_data: list with vairous data formated as follows
-        [Price, "Color", rent, rent_1_house, ..., rent_hotel]
+        ["Color", Price, rent, rent_1_house, ..., rent_hotel]
         """
-        self.color = property_data[1]
+        self.color = property_data[0]
         self.rent = property_data[2:]
         self.number_of_houses = 0
-        super().__init__(location, name, property_data[0])
+        self.cost_per_house = self.set_cost_per_house(location)
+        super().__init__(location, name, int(property_data[1]))
+
+    @staticmethod
+    def set_cost_per_house(location):
+        if location > 30:
+            return 200
+        elif location > 20:
+            return 150
+        elif location > 10:
+            return 100
+        else:
+            return 50
+
+    def __str__(self):
+        rent_teirs = ''
+        for teir in self.rent:
+            rent_teirs += str(teir) + ', '
+        owned_by = self.format_owner()
+        output = "{0} {1} {2}" \
+                 "\n\t{3}" \
+                 "\n\tCost Per House: {4}, Number Of Houses: {5}" \
+                 "\n\tRent Teirs {6}"\
+            .format(self.location, self.name, self.color, owned_by,
+                    self.cost_per_house, self.number_of_houses, rent_teirs)
+        return output
+
+    def format_current_rent(self):
+        return str(self.rent[self.number_of_houses])
 
 
 class Utility(Location):
@@ -204,7 +249,7 @@ class Card(Effect):
         self.active_player.position -= num_tiles
         print("You've been sent back ", num_tiles, "tiles.",
               "\nYou're now on tile number: ", self.active_player.position)
-        return Board[self.active_player.position].landed_on()
+        return Board.spaces[self.active_player.position].landed_on()
 
     def go_to_jail(self):
         print("Oh No! you've been sent to jail!!")
@@ -234,6 +279,10 @@ class Card(Effect):
     def get_money_from_all_other_players(self, amount):
         amount = amount * -1
         self.pay_all_other_players(amount)
+
+    def __str__(self):
+        output = "{0} {1}".format(self.location, self.name)
+        return output
           
 
 class Chance(Card):
@@ -338,7 +387,7 @@ class Board(object):
     Using temp spaces dictionary for testing
     """
     spaces = {}
-    streets = {x: Property(x, "Name", [150, "Color", 5, 10, 20, 40, 80, 160])
+    streets = {x: Property(x, "Name", ["Color", 150, 5, 10, 20, 40, 80, 160])
                for x in range(0, 40)}
     railroads = {x: Railroad(x, "Name") for x in [5, 15, 25, 35]}
     utilities = {x: Utility(x, "Name") for x in [12, 28]}
@@ -357,19 +406,28 @@ class Board(object):
     def read_in_board(cls):
         """
         read in a board from file. Each line should be formated as follows:
-        TileClass Square# class data
+        Square# ClassType class data
         """
-        try:
-            spaces = {}
-            file_name = input("Please enter the file Name: ")
-            with open(file_name) as file:
-                for line in file:
-                    if not line.startswith('#'):
-                        data = line.split()
-                        new_tile = TileFactory.create_tile(data)
-                        spaces.update(new_tile)
-        except FileNotFoundError:
-            print("File Not found, please try again.\n")
+        loop_value = True
+        while loop_value:
+            try:
+                file_name = input("Please enter the file Name: ")
+                with open(file_name) as file:
+                    for line in file:
+                        if not line.startswith('#'):
+                            data = line.split()
+                            new_tile = TileFactory.create_tile(data)
+                            cls.spaces.update(new_tile)
+                            loop_value = False
+            except FileNotFoundError:
+                print("File Not found, please try again.\n")
+
+    @classmethod
+    def __str__(cls):
+        output = ''
+        for key in cls.spaces:
+            output = output + "\n" + cls.spaces[key].__str__()
+        return output
 
 
 class TileFactory:
@@ -379,31 +437,42 @@ class TileFactory:
 
     @staticmethod
     def create_tile(data):
-        try:
-            class_type = data[1]
-            position = int(data[0])
-            name = data[2]
-            data = data[3:]
-            if class_type == "Property":
-                return {position: Property(position, name, data)}
-            elif class_type == "Utility":
-                return {position: Utility(position, name)}
-            elif class_type == "Railroad":
-                return {position: Railroad(position, name)}
-            elif class_type == "Chance":
-                return {position: Chance(position, name)}
-            elif class_type == "CommunityChest":
-                return {position: CommunityChest(position, name)}
-            elif class_type == "SetTax":
-                return {position: SetTax(position, name, data)}
-            elif class_type == "PercentTax":
-                return {position: PercentTax(position, name, data)}
-            elif class_type == "FreeParking":
-                return {position: FreeParking(position)}
-            else:
-                raise TilesClassNotFoundError
-        except TilesClassNotFoundError:
-            print("\n\nError!!\n\tClass Type: ", class_type, " Not Found!")
+        while True:
+            try:
+                if data is not None:
+                    position = int(data[0])
+                    class_type = data[1]
+                    name = data[2]
+                    data = data[3:]
+                if class_type == "Property":
+                    return {position: Property(position, name, data)}
+                elif class_type == "Utility":
+                    return {position: Utility(position, name)}
+                elif class_type == "Railroad":
+                    return {position: Railroad(position, name)}
+                elif class_type == "Chance":
+                    return {position: Chance(position, name)}
+                elif class_type == "CommunityChest":
+                    return {position: CommunityChest(position, name)}
+                elif class_type == "SetTax":
+                    return {position: SetTax(position, name, data)}
+                elif class_type == "PercentTax":
+                    return {position: PercentTax(position, name, data)}
+                elif class_type == "FreeParking":
+                    return {position: FreeParking(position)}
+                elif class_type == "Go":
+                    return {0: Go()}
+                elif class_type == 'JustVisiting':
+                    return {10: JustVisiting()}
+                elif class_type == 'GoToJail':
+                    return {30: GoToJail()}
+                else:
+                    raise TilesClassNotFoundError
+            except TilesClassNotFoundError:
+                print("\n\nError!!\n\tClass Type: ", data[1], " Not Found!")
+                break
+            except IndexError:
+                data = None
 
 
 class SetTax(Effect):
@@ -413,8 +482,13 @@ class SetTax(Effect):
         super().__init__(location, name)
 
     def landed_on(self, player):
-        # TODO: SetTax Landed On
-        pass
+        Board.spaces[20].exchange_money(player, self.amount)
+
+    def __str__(self):
+        output = "{0} {1}" \
+                 "\n\tTax Amount: ${2}"\
+            .format(self.location, self.name, self.amount)
+        return output
 
 
 class PercentTax(Effect):
@@ -424,5 +498,67 @@ class PercentTax(Effect):
         super().__init__(location, name)
 
     def landed_on(self, player):
-        # TODO: PercentTax landedOn
+        Board.spaces[20].exchange_money(player, player.money * self.percent)
+
+    def __str__(self):
+        output = "{0} {1}" \
+                 "\n\tTax percent: {2}%"\
+            .format(self.location, self.name, self.percent)
+
+
+class CornerTile(ABC):
+    """
+    Parent Class For Each of the corner tiles
+    Excluding Free Parking.
+    """
+
+    @abstractmethod
+    def __init__(self, location, name):
+        self.location = location
+        self.name = name
+
+    @abstractmethod
+    def landed_on(self, player):
         pass
+
+    def __str__(self):
+        output = "{0} {1}".format(self.location, self.name)
+        return output
+
+
+class Go(CornerTile):
+    """
+    Class For Go tile
+    """
+
+    def __init__(self, location=0, name='GO'):
+        super().__init__(location, name)
+
+    def landed_on(self, player):
+        print("Landed on Go!")
+
+
+class JustVisiting(CornerTile):
+    """
+    Class for Just Visting Jail
+    """
+
+    def __init__(self, location=10, name="JustVisiting"):
+        super().__init__(location, name)
+
+    def landed_on(self, player):
+        # TODO: find a way to print out what players are in jail
+        print("Just Visiting Jail")
+
+
+class GoToJail(CornerTile):
+    """
+    Class that sends people to jail
+    """
+
+    def __init__(self, location=30, name='Go To Jail'):
+        super().__init__(location, name)
+
+    def landed_on(self, player):
+        player.position = 'jail'
+        print("Go To Jail!!!")
