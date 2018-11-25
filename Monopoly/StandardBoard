@@ -45,3 +45,4 @@
 37 Property Park_Place Dark_Blue 350 35 175 500 1100 1300 1500
 38 SetTax Luxury_Tax 100
 39 Property Boardwalk Dark_Blue 400 50 200 600 1400 1700 2000
+999 jail PlayerInJail

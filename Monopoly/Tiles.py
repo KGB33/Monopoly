@@ -258,9 +258,13 @@ class Card(Effect):
     def house_repairs(self):
         owed_money = 0
         for key in Board.spaces:
-            if Board.spaces[key].owner == self.active_player:
-                hold = Board.spaces[key].number_of_houses
-                owed_money += 25 * hold
+            try:
+                if Board.spaces[key].owner == self.active_player:
+                    hold = Board.spaces[key].number_of_houses
+                    owed_money += 25 * hold
+            except AttributeError:
+                # Cornner Tiles have no attrabute ownmer, skipped
+                pass
         print("House repairs are expensive!")
         if owed_money == 0:
             print("Lucky for you, you have no houses")
@@ -443,7 +447,11 @@ class TileFactory:
                     position = int(data[0])
                     class_type = data[1]
                     name = data[2]
-                    data = data[3:]
+                    try:
+                        data = [int(x) for x in data[3:]]
+                    except ValueError:
+                        last_part_data = [int(x) for x in data[4:]]
+                        data = data[3] + last_part_data
                 if class_type == "Property":
                     return {position: Property(position, name, data)}
                 elif class_type == "Utility":
@@ -455,9 +463,9 @@ class TileFactory:
                 elif class_type == "CommunityChest":
                     return {position: CommunityChest(position, name)}
                 elif class_type == "SetTax":
-                    return {position: SetTax(position, name, data)}
+                    return {position: SetTax(position, name, data[0])}
                 elif class_type == "PercentTax":
-                    return {position: PercentTax(position, name, data)}
+                    return {position: PercentTax(position, name, data[0])}
                 elif class_type == "FreeParking":
                     return {position: FreeParking(position)}
                 elif class_type == "Go":
@@ -466,6 +474,8 @@ class TileFactory:
                     return {10: JustVisiting()}
                 elif class_type == 'GoToJail':
                     return {30: GoToJail()}
+                elif class_type == 'jail':
+                    return {'jail': Jail()}
                 else:
                     raise TilesClassNotFoundError
             except TilesClassNotFoundError:
@@ -478,7 +488,7 @@ class TileFactory:
 class SetTax(Effect):
 
     def __init__(self, location, name, amount):
-        self.amount = amount
+        self.amount = int(amount)
         super().__init__(location, name)
 
     def landed_on(self, player):
@@ -494,7 +504,7 @@ class SetTax(Effect):
 class PercentTax(Effect):
 
     def __init__(self, location, name, percent):
-        self.percent = percent
+        self.percent = float(percent)
         super().__init__(location, name)
 
     def landed_on(self, player):
@@ -562,3 +572,16 @@ class GoToJail(CornerTile):
     def landed_on(self, player):
         player.position = 'jail'
         print("Go To Jail!!!")
+
+
+class Jail(CornerTile):
+
+    def __init__(self, location='jail', name='jail'):
+        super().__init__(location, name)
+
+    def landed_on(self, player):
+        pass
+
+    def __str__(self):
+        return "This is the jail"
+

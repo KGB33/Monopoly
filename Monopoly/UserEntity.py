@@ -18,6 +18,10 @@ class UserEntity(ABC):
         self.money += amount
         paying_player.money -= amount
 
+    def __str__(self):
+        output = "This UserEntity has ${0}".format(self.money)
+        return output
+
 
 class Player(UserEntity):
     """
@@ -55,14 +59,14 @@ class Player(UserEntity):
                 num_doubles = num_doubles + 1
             else:
                 num_doubles = 0
+            if self.position == 'jail':
+                raise PlayerInJailError
             if num_doubles == 3:
                 # go to jail
                 self.position = 'jail'
                 print("You rolled too many doubles and landed in jail")
                 return num_doubles
             else:
-                if self.position == 'jail':
-                    raise PlayerInJailError
                 self.move_player(dice_1 + dice_2)
                 return num_doubles
         except PlayerInJailError:
@@ -83,7 +87,7 @@ class Player(UserEntity):
                 self.position = 10
                 self.move_player(dice_1 + dice_2)
                 return num_doubles
-            if num_doubles == 1:
+            if num_doubles != 0:
                 self.position = 10
                 self.move_player(dice_1 + dice_2)
                 return num_doubles
@@ -94,19 +98,28 @@ class Player(UserEntity):
             self.money += 200
         self.position = self.position % 40
 
+    def __str__(self):
+        output = "{0}\t${1}" \
+                 "\n\tIs On {2}".format(self.name, self.money, self.position)
+        return output
 
-class Bank(UserEntity):
+
+class Bank(object):
     """
     The Bank Class for the game
     """
-    def __init__(self, money_in=0):
-        super().__init__(money_in=money_in)
 
-    def exchange_money(self, paying_player, amount):
+    @staticmethod
+    def exchange_money(paying_player, amount):
         """
         Takes money from paying player
         """
         paying_player.money -= amount
+
+    @classmethod
+    def __str__(cls):
+        output = "The Bank"
+        return output
 
 
 class FreeParking(UserEntity):
@@ -121,3 +134,8 @@ class FreeParking(UserEntity):
     def landed_on(self, player):
         player.money += self.money
         self.money = 0
+
+    def __str__(self):
+        output = "20 {0}" \
+                 "\n\tThere is ${1} up for grabs".format(self.name, self.money)
+        return output
