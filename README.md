@@ -14,8 +14,7 @@ Project to self teach:
         - Abstract Base Classes and Methods
     
   
-  - QtPy
-  
+ 
   - Unittests
   
     - Mock
