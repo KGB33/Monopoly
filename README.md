@@ -9,7 +9,7 @@ Project to self teach:
     - Factory patten
     - Class Methods
     - Static Methods
-    - Inheratance
+    - Inheritance
     
         - Abstract Base Classes and Methods
     
