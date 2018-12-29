@@ -9,7 +9,7 @@ class Testinit(unittest.TestCase):
     def test_init(self):
         test_util = Utility(28, "Name")
         self.assertEqual(test_util.location, 28)
-        self.assertFalse(test_util.is_morgaged)
+        self.assertFalse(test_util.is_mortgaged)
         self.assertEqual(test_util.name, "Name")
         self.assertEqual(test_util.price, 150)
         self.assertEqual(test_util.owner, Bank)
@@ -83,7 +83,7 @@ class TestLandedOn(unittest.TestCase):
         test_player = Player("Test Player")
         test_player_2 = Player("Morgageee")
         test_util.owner = test_player_2
-        test_util.morgage()
+        test_util.mortgage()
         test_util.landed_on(test_player)
         self.assertEqual(test_util.owner, test_player)
         self.assertEqual(test_player.money, 1425)

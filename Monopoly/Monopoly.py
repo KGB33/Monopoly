@@ -3,11 +3,11 @@ from Tiles import Board
 from InputValidation import get_positive_non_zero_int_input
 from Exceptions import PlayerOutOfMoneyError
 """
-Temp main to demonstrat / play with player class
+Temp main to demonstrate / play with player class
 """
 
 
-def __main__():
+def main():
     Board.read_in_board()
     print(Board.__str__())
     number_of_players = get_positive_non_zero_int_input("\nHow many Players? ")
@@ -15,7 +15,7 @@ def __main__():
     for i in range(0, number_of_players):
         name = str(input("\nWhat is the next player's name?"))
         player_list += [Player(name)]
-    while player_list: # In Python empty lists are False
+    while player_list:  # In Python empty lists are False
         for player in player_list:
             try:
                 if player.money <= 0:
@@ -24,6 +24,7 @@ def __main__():
                       + "\n==============================\n"
                       + player.__str__()
                       + "\n==============================\n")
+                choice = player.turn_options()
                 keep_rolling = True
                 num_doubles = 0
                 while keep_rolling:
@@ -36,5 +37,5 @@ def __main__():
                 player_list.remove(player)
 
 
-
-__main__()
+if __name__ == '__main__':
+    main()

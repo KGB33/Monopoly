@@ -125,5 +125,23 @@ class TestRollDice(unittest.TestCase):
         self.assertEqual(test_player.position, 2)
 
 
+class TestTurnOptions(unittest.TestCase):
+
+    @patch("UserEntity.input", return_value='R')
+    def test_choose_roll_dice(self, input):
+        test_player = Player("Test")
+        self.assertEqual('r', test_player.turn_options())
+
+    @patch("UserEntity.input", return_value='B')
+    def test_choose_buy_houses(self, input):
+        test_player = Player("Test")
+        self.assertEqual('b', test_player.turn_options())
+
+    @patch("UserEntity.input", side_effect=['1', 'V'])
+    def test_choose_view_owned(self, input):
+        test_player = Player("Test")
+        self.assertEqual('v', test_player.turn_options())
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,7 @@ from UserEntity import Player, Bank
 
 
 def correct_data(self):
-    return [150, "Color", 5, 10, 20, 40, 80, 160]
+    return ["Color", 150, 5, 10, 20, 40, 80, 160]
 
 
 class Testinit(unittest.TestCase):
@@ -21,7 +21,7 @@ class Testinit(unittest.TestCase):
         self.assertEqual(test_property.rent, [5, 10, 20, 40, 80, 160])
         self.assertEqual(test_property.number_of_houses, 0)
         self.assertEqual(test_property.owner, Bank)
-        self.assertFalse(test_property.is_morgaged)
+        self.assertFalse(test_property.is_mortgaged)
         self.assertEqual(test_property.location, 12)
 
 
@@ -73,7 +73,7 @@ class TestLandedOn(unittest.TestCase):
         test_player = Player("Test Player")
         test_player_2 = Player("Morgageee")
         test_property.owner = test_player_2
-        test_property.morgage()
+        test_property.mortgage()
         test_property.landed_on(test_player)
         self.assertEqual(test_property.owner, test_player)
         self.assertEqual(test_player.money, 1425)

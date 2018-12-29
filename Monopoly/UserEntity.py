@@ -98,6 +98,31 @@ class Player(UserEntity):
             self.money += 200
         self.position = self.position % 40
 
+    @staticmethod
+    def turn_options():
+        """
+        Possible Options:
+            Roll Dice
+            Buy Houses
+            View Properties
+        """
+        while True:
+            choice = input('\tWhat would you like to do?'
+                           '\n\t\t(r) Roll Dice'
+                           '\n\t\t(b) Buy Houses/Hotels'
+                           '\n\t\t(v) View Owned Properties'
+                           '\n>>>').lower()
+            if choice == 'r':
+                return 'r'
+            elif choice == 'b':
+                print('TODO')  # TODO: Add buy houses method
+                return 'b'
+            elif choice == 'v':
+                print('TODO, view owned properties')  # TODO: Add method to view properties
+                return 'v'
+            else:
+                print("Input not recognised, please try again\n")
+
     def __str__(self):
         output = "{0}\t${1}" \
                  "\n\tIs On {2}".format(self.name, self.money, self.position)

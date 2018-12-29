@@ -10,7 +10,7 @@ class TestInit(unittest.TestCase):
     def test_init(self):
         test_bank = Bank()
         self.assertIsInstance(test_bank, Bank)
-        self.assertEqual(test_bank.money, 0)
+        self.assertEqual(Bank.__str__(), "The Bank")
 
 
 if __name__ == '__main__':
