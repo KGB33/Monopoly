@@ -944,10 +944,25 @@ class CornerTile(ABC):
     """
     Parent Class For Each of the corner tiles
     Excluding Free Parking.
+
+    Attributes:
+        :location: (int)
+            position, (0 - 39), on the monopoly board
+
+        :name: (String)
+            Name of the location
+
     """
 
     @abstractmethod
     def __init__(self, location, name):
+        """
+        :param location: (int)
+            Location, (0 - 39) on the monopoly board
+
+        :param name: (String)
+            Name of the Tile
+        """
         self.location = location
         self.name = name
 
@@ -956,16 +971,35 @@ class CornerTile(ABC):
         pass
 
     def __str__(self):
+        """
+        :return: (String)
+            Description of the tile
+        """
         output = "{0} {1}".format(self.location, self.name)
         return output
 
 
 class Go(CornerTile):
     """
-    Class For Go tile
+    Models GO Tile
+
+    Attributes:
+        ---- From CornerTile Class ----
+            :location: (int)
+                position, (0 - 39), on the monopoly board
+
+            :name: (String)
+                Name of the location
     """
 
     def __init__(self, location=0, name='GO'):
+        """
+        :param location: (int)
+            Location, (0 - 39) on the monopoly board
+
+        :param name: (Optional, String, default=GO)
+            Name of the Tile
+        """
         super().__init__(location, name)
 
     def landed_on(self, player):
@@ -974,10 +1008,25 @@ class Go(CornerTile):
 
 class JustVisiting(CornerTile):
     """
-    Class for Just Visting Jail
+    Models Just Visiting (jail) tile
+
+    Attributes:
+        ---- From CornerTile Class ----
+            :location: (int)
+                position, (0 - 39), on the monopoly board
+
+            :name: (String)
+                Name of the location
     """
 
     def __init__(self, location=10, name="JustVisiting"):
+        """
+        :param location: (int)
+            Location, (0 - 39) on the monopoly board
+
+        :param name: (Optional, String, default=JustVisiting)
+            Name of the Tile
+        """
         super().__init__(location, name)
 
     def landed_on(self, player):
