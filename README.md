@@ -1,7 +1,9 @@
 # Monopoly
 ###### _Developed By Kelton Bassingthwaite_
 
-Project to self teach:
+A recreation of Monopoly in Python to better understand OOP and Unit testing
+
+### Project to self teach:
 
   - PEP 8
   
